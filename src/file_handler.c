@@ -1,6 +1,17 @@
 #include "file_handler.h"
+#include <stdio.h>
 
-int read_file()
+file_err_t read_file(char filename[])
 {
-   return 6;
+   FILE *fp = fopen(filename, "r");
+   char ch;
+
+   if (fp == NULL) {
+      printf("Unable to open file.");
+      return FILENAME_DOESNT_EXIST_ERR;
+   }
+
+   return UNKNOWN_ERR;
 }
+
+

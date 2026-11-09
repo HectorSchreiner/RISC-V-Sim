@@ -5,7 +5,7 @@ typedef enum FileErr
 {
     FILENAME_DOESNT_EXIST_ERR,
     READ_FILE_ERR,
-    UNKNOWN_ERR
+    UNKNOWN_ERR,
 } file_err_t;
 
 /// @brief `FileHandler` is a struct that will do all file operations on the input file/files.
@@ -13,9 +13,11 @@ typedef enum FileErr
 /// this way we can simulate methods.
 typedef struct FileHandler
 {
-    file_err_t (*read_file)(struct FileHandler *self, char filename[]);
+    int* (*read_file)(struct FileHandler *self);
 } file_handler_t;
 
-file_err_t read_file(file_handler_t* fh, char filename[]);
+struct FileHandler* create_filehandler();
+
+int* read_file(file_handler_t* fh);
 
 #endif

@@ -2,7 +2,6 @@
 
 typedef enum ProgramCounterErr
 {
-    OK,
     IVALID_CNT,
     CREATION_ERR
 } program_cnt_err_t;

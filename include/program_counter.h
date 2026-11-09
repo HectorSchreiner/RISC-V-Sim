@@ -12,13 +12,12 @@ typedef enum ProgramCounterErr
 typedef struct ProgramCounter
 {
     int cnt, increment;
-    program_cnt_err_t (*init_counter)(struct ProgramCounter *self, unsigned init_cnt, unsigned increment);
     program_cnt_err_t (*increment_counter)(struct ProgramCounter *self);
     program_cnt_err_t (*set_counter)(struct ProgramCounter *self, unsigned value);
-} program_cnt_t;
+} ProgramCounter;
 
-program_cnt_err_t init_counter(program_cnt_t* pc, unsigned init_cnt, unsigned increment);
+struct ProgramCounter* create_counter();
 
-program_cnt_err_t increment_counter(program_cnt_t* pc);
+program_cnt_err_t increment_counter(ProgramCounter* pc);
 
-program_cnt_err_t set_value(program_cnt_t* pc, unsigned value);
+program_cnt_err_t set_counter(ProgramCounter* pc, unsigned value);

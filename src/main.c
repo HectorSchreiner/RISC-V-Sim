@@ -4,13 +4,14 @@
 
 int main(void)
 {
-   program_cnt_t pc;
-   init_counter(&pc, 174, 4);
-   printf("PC: %d\n", (int)pc.cnt);
+   struct ProgramCounter* pc = create_counter();
+   pc->cnt = 0;
+   pc->increment = 4;
+   printf("PC: %d\n", (int)pc->cnt);
 
    for (int i = 0; i < 10; i++) {
-      increment_counter(&pc);
-      printf("PC: %d\n", (int)pc.cnt);
+      pc->increment_counter(pc);
+      printf("PC: %d\n", (int)pc->cnt);
    }
 
    return 0;

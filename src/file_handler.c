@@ -1,7 +1,7 @@
 #include "file_handler.h"
 #include <stdio.h>
 
-file_err_t read_file(file_handler_t* fh, char filename[])
+file_err_t read_file(file_handler_t *fh, char filename[])
 {
    FILE *fp = fopen(filename, "r");
    char ch;

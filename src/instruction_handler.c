@@ -95,8 +95,11 @@ void execute_format_r(struct InstructionHandler* ih) {
     {
     case 0:
         if (ih->funct7 == 0) { // ADD
-            ih->rd = ih->rs1;
-            ih->rd += ih->rs2;
+            int src_1 = ih->registers[ih->rs1];
+            int src_2 = ih->registers[ih->rs2];
+
+            ih->registers[ih->rd] = src_1 + src_2;
+            printf("ADD x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
         }
         if (ih->funct7 == 0x20) { // SUB
             ih->rd = ih->rs1;
@@ -115,9 +118,9 @@ void execute_format_i(struct InstructionHandler* ih) {
     {
     case 0:
         if (ih->funct7 == 0) { // ADDI
-            ih->registers[ih->rd] = ih->registers[ih->rs1];
-            ih->registers[ih->rd] += ih->imm;
-            printf("ADDI rs1(%d) imm(%d) -> rd(%d)\n", ih->registers[ih->rs1], ih->imm, ih->registers[ih->rd]);
+            int src = ih->registers[ih->rs1];
+            ih->registers[ih->rd] = src + ih->imm;
+            printf("ADDI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
         }
         break;
     

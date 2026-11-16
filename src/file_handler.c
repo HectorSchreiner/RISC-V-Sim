@@ -12,7 +12,7 @@ struct FileHandler* create_filehandler() {
 
 int* read_file(struct FileHandler *fh)
 {
-   char filename[] = "/home/hector/dtu/cae/RISC-V-Sim/tests/addi.bin";
+   char filename[] = "/home/hector/dtu/cae/RISC-V-Sim/tests/add_5_10.bin";
 
    FILE *fptr;
    __uint32_t value;

@@ -154,6 +154,7 @@ void execute_format_r(struct InstructionHandler *ih)
 
         ih->registers[ih->rd] = src_1 | src_2;
         printf("OR x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
 
     case 0x7:
@@ -164,6 +165,7 @@ void execute_format_r(struct InstructionHandler *ih)
 
         ih->registers[ih->rd] = src_1 & src_2;
         printf("AND x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
 
     case 0x1:
@@ -174,6 +176,7 @@ void execute_format_r(struct InstructionHandler *ih)
 
         ih->registers[ih->rd] = src_1 << src_2;
         printf("SLL x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
 
     case 0x5:
@@ -197,6 +200,7 @@ void execute_format_r(struct InstructionHandler *ih)
             ih->registers[ih->rd] = src_1 >> src_2;
             printf("SRA x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
         }
+        break;
     }
 
     case 0x2:
@@ -206,6 +210,7 @@ void execute_format_r(struct InstructionHandler *ih)
         int src_2 = ih->registers[ih->rs2];
         ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
         printf("SLT x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
 
     case 0x3:
@@ -215,6 +220,7 @@ void execute_format_r(struct InstructionHandler *ih)
         int src_2 = ih->registers[ih->rs2];
         ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
         printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
     default:
         printf("UNKOWN FUNC: %d\n", ih->funct3);
@@ -231,8 +237,8 @@ void execute_format_i1(struct InstructionHandler *ih)
         int src = ih->registers[ih->rs1];
         ih->registers[ih->rd] = src + ih->imm;
         printf("ADDI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+        break;
     }
-    break;
     case 0x4:
     {
         // XORI
@@ -272,7 +278,7 @@ void execute_format_i1(struct InstructionHandler *ih)
     case 0x5:
     {
         // SRLI
-        if (ih->imm >> 5 & 0b11111111 == 0x00)
+        if (((ih->imm >> 5) & 0b11111111) == 0x00)
         {
             // SLLI
             int src = ih->registers[ih->rs1];
@@ -281,13 +287,15 @@ void execute_format_i1(struct InstructionHandler *ih)
             break;
         }
         // SRAI
-        if (ih->imm >> 5 & 0b11111111 == 0x20)
+        if (((ih->imm >> 5) & 0b11111111) == 0x20)
         {
             // TODO (NOT WORKING!!!)
             int src = ih->registers[ih->rs1];
             ih->registers[ih->rd] = src >> (ih->imm & 0b11111);
             printf("SRAI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
         }
+        break;
+
     }
 
     case 0x2:
@@ -297,6 +305,7 @@ void execute_format_i1(struct InstructionHandler *ih)
         int src_2 = ih->imm;
         ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
         printf("SLTI x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
 
     case 0x3:
@@ -306,6 +315,7 @@ void execute_format_i1(struct InstructionHandler *ih)
         int src_2 = ih->imm;
         ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
         printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
     }
     default:
         printf("UNKOWN FUNC: %d\n", ih->funct3);

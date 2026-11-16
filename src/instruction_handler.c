@@ -19,31 +19,24 @@ void execute_format_r(struct InstructionHandler *ih);
 
 instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
 {
-    printf("bits: %d\n", bits);
-    printf("bits &: %d\n", bits & 0b1111111);
 
     switch (bits & 0b1111111)
     {
     case 0b0110011: // function type R
-        printf("function type R\n");
         ih->rs1 = (bits >> 15) & 0b11111;
         ih->rs2 = (bits >> 20) & 0b11111;
         ih->rd = (bits >> 7) & 0b11111;
         ih->funct3 = (bits >> 12) & 0b111;
         ih->funct7 = (bits >> 25) & 0b1111111;
         execute_format_r(ih);
-        printf("end\n");
         break;
 
     case 0b0010011: // function type I
-        printf("function type I\n");
         ih->rs1 = (bits >> 15) & 0b11111;
         ih->rd = (bits >> 7) & 0b11111;
         ih->funct3 = (bits >> 12) & 0b111;
         ih->imm = (bits >> 20) & 0b111111111111;
         execute_format_i(ih);
-        printf("end\n");
-
         break;
 
     case 0b0100011: // function type S
@@ -80,11 +73,10 @@ instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
         ih->rd = (bits >> 7) & 0b11111;
         // ih->funct3 = bits>>12 & 0b111;
         ih->imm = bits & (0b11111111111111111111) << 12;
-        printf("function type U\n");
         break;
 
     default:
-        printf("stupid ass\n");
+        printf("Function Type Not Existing\n");
         return UNKNOWN;
     }
 
@@ -94,7 +86,6 @@ instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
 
 void execute_format_r(struct InstructionHandler *ih)
 {
-    printf("execute_r");
     switch (ih->funct3)
     {
     case 0:
@@ -110,12 +101,92 @@ void execute_format_r(struct InstructionHandler *ih)
         { // SUB
             int src_1 = ih->registers[ih->rs1];
             int src_2 = ih->registers[ih->rs2];
-            
+
             ih->registers[ih->rd] = src_1 - src_2;
             printf("SUB x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
         }
         break;
+    case 0x4:
+    {
+        // XOR
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
 
+        ih->registers[ih->rd] = src_1 ^ src_2;
+        printf("XOR x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        break;
+    }
+
+    case 0x6:
+    {
+        // OR
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
+
+        ih->registers[ih->rd] = src_1 | src_2;
+        printf("OR x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
+
+    case 0x7:
+    {
+        // OR
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
+
+        ih->registers[ih->rd] = src_1 & src_2;
+        printf("AND x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
+
+    case 0x1:
+    {
+        // SLL
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
+
+        ih->registers[ih->rd] = src_1 << src_2;
+        printf("SLL x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
+
+    case 0x5:
+    {
+        // SRL
+        if (ih->funct7 == 0)
+        {
+            int src_1 = ih->registers[ih->rs1];
+            int src_2 = ih->registers[ih->rs2];
+
+            ih->registers[ih->rd] = src_1 >> src_2;
+            printf("SRL x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        }
+        // SRA
+        if (ih->funct7 == 0x20)
+        {
+            // TODO (NOT WORKING!!!)
+            int src_1 = ih->registers[ih->rs1];
+            int src_2 = ih->registers[ih->rs2];
+
+            ih->registers[ih->rd] = src_1 >> src_2;
+            printf("SRA x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+        }
+    }
+
+    case 0x2:
+    {
+        // SLT
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
+        ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
+        printf("SLT x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
+
+    case 0x3:
+    {
+        // SLTU TODO NOT WORKING!!
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->registers[ih->rs2];
+        ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
+        printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
     default:
         break;
     }
@@ -123,16 +194,89 @@ void execute_format_r(struct InstructionHandler *ih)
 
 void execute_format_i(struct InstructionHandler *ih)
 {
-    printf("execute_i\n");
     switch (ih->funct3)
     {
     case 0:
-        // ADDI
+    { // ADDI
         int src = ih->registers[ih->rs1];
         ih->registers[ih->rd] = src + ih->imm;
         printf("ADDI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+    }
+    break;
+    case 0x4:
+    {
+        // XORI
+        int src = ih->registers[ih->rs1];
+        ih->registers[ih->rd] = src ^ ih->imm;
+        printf("XORI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
         break;
+    }
 
+    case 0x6:
+    {
+        // OR
+        int src = ih->registers[ih->rs1];
+        ih->registers[ih->rd] = src | ih->imm;
+        printf("ORI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+        break;
+    }
+
+    case 0x7:
+    {
+        // ANDI
+        int src = ih->registers[ih->rs1];
+        ih->registers[ih->rd] = src & ih->imm;
+        printf("ANDI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+        break;
+    }
+
+    case 0x1:
+    {
+        // SLLI
+        int src = ih->registers[ih->rs1];
+        ih->registers[ih->rd] = src << (ih->imm & 0b11111);
+        printf("SLLI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+        break;
+    }
+
+    case 0x5:
+    {
+        // SRLI
+        if (ih->imm >> 5 & 0b11111111 == 0x00)
+        {
+            // SLLI
+            int src = ih->registers[ih->rs1];
+            ih->registers[ih->rd] = src >> (ih->imm & 0b11111);
+            printf("SRLI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+            break;
+        }
+        // SRAI
+        if (ih->imm >> 5 & 0b11111111 == 0x20)
+        {
+            // TODO (NOT WORKING!!!)
+            int src = ih->registers[ih->rs1];
+            ih->registers[ih->rd] = src >> (ih->imm & 0b11111);
+            printf("SRAI x%d(%d) + %d -> x%d(%d)\n", ih->rs1, src, ih->imm, ih->rd, ih->registers[ih->rd]);
+        }
+    }
+
+    case 0x2:
+    {
+        // SLTI
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->imm;
+        ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
+        printf("SLTI x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
+
+    case 0x3:
+    {
+        // SLTIU TODO NOT WORKING!!
+        int src_1 = ih->registers[ih->rs1];
+        int src_2 = ih->imm;
+        ih->registers[ih->rd] = (src_1 < src_2 ? 1 : 0);
+        printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
+    }
     default:
         break;
     }

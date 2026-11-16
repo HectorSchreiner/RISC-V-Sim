@@ -10,9 +10,9 @@ struct FileHandler* create_filehandler() {
    return fh;
 }
 
-int* read_file(struct FileHandler *fh)
+int* read_file(struct FileHandler *fh, int *size)
 {
-   char filename[] = "/home/hector/dtu/cae/RISC-V-Sim/tests/add_5_10.bin";
+   char filename[] = "/home/hector/dtu/cae/RISC-V-Sim/tests/addlarge.bin";
 
    FILE *fptr;
    __uint32_t value;
@@ -22,13 +22,12 @@ int* read_file(struct FileHandler *fh)
 
    struct stat st;
    stat(filename, &st);
-   int size = st.st_size;
+   *size = st.st_size;
 
-   int *instructions_b = malloc(size);
+   int *instructions_b = malloc((size_t)*size);
    int cnt = 0;
    
    while (fread(&value, sizeof(value), 1, fptr) == 1) {
-      printf("hex: %x\n", value);
       instructions_b[cnt] = value;
       cnt += 4;
    }

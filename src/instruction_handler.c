@@ -18,20 +18,20 @@ instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
     {
         case 0b0110011: // function type R
             printf("function type R\n");
-            ih->rs1    = bits>>15 & 0b11111;
-            ih->rs2    = bits>>20 & 0b11111;
-            ih->rd     = bits>>7  & 0b11111;
-            ih->funct3 = bits>>12 & 0b111;
-            ih->funct7 = bits>>25 & 0b1111111;
+            ih->rs1    = (bits>>15) & 0b11111;
+            ih->rs2    = (bits>>20) & 0b11111;
+            ih->rd     = (bits>>7)  & 0b11111;
+            ih->funct3 = (bits>>12) & 0b111;
+            ih->funct7 = (bits>>25) & 0b1111111;
             printf("end\n");
             break;
         
         case 0b0010011: // function type I
             printf("function type I\n");
-            ih->rs1    = bits>>15 & 0b11111;
-            ih->rd     = bits>>7  & 0b11111;
-            ih->funct3 = bits>>12 & 0b111;
-            ih->imm    = bits>>20 & 0b111111111111;
+            ih->rs1    = (bits>>15) & 0b11111;
+            ih->rd     = (bits>>7)  & 0b11111;
+            ih->funct3 = (bits>>12) & 0b111;
+            ih->imm    = (bits>>20) & 0b111111111111;
             printf("end\n");
 
             break;

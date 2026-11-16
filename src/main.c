@@ -16,6 +16,7 @@ int main(void)
 
    for (int i = 0; i < 10; i++) {
       printf("PC: %d\n", pc->cnt);
+      printf("instruction: %d\n", instructions_b[pc->cnt / 4]);
       ih->decode_instruction(ih, instructions_b[pc->cnt / 4]);
       pc->increment_counter(pc);
    }

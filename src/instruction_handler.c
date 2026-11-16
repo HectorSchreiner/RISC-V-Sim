@@ -11,27 +11,29 @@ struct InstructionHandler* create_instruction_handler() {
 
 
 instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
-    printf("here");
+    printf("bits: %d\n", bits);
+    printf("bits &: %d\n", bits & 0b1111111);
+
     switch (bits & 0b1111111)
     {
         case 0b0110011: // function type R
-            ih->rs1    = (bits>>15) & 0b11111;
-            ih->rs2    = (bits>>20) & 0b11111;
-            ih->rd     = (bits>>7)  & 0b11111;
-            ih->funct3 = (bits>>12) & 0b111;
-            ih->funct7 = (bits>>25) & 0b1111111;
             printf("function type R\n");
+            ih->rs1    = bits>>15 & 0b11111;
+            ih->rs2    = bits>>20 & 0b11111;
+            ih->rd     = bits>>7  & 0b11111;
+            ih->funct3 = bits>>12 & 0b111;
+            ih->funct7 = bits>>25 & 0b1111111;
+            printf("end\n");
             break;
         
         case 0b0010011: // function type I
-        case 0b1100111:
-        case 0b1110011:
-        case 0b0000011:
-            ih->rs1    = (bits>>15) & 0b11111;
-            ih->rd     = (bits>>7)  & 0b11111;
-            ih->funct3 = (bits>>12) & 0b111;
-            ih->imm    = (bits>>20) & 0b111111111111;
             printf("function type I\n");
+            ih->rs1    = bits>>15 & 0b11111;
+            ih->rd     = bits>>7  & 0b11111;
+            ih->funct3 = bits>>12 & 0b111;
+            ih->imm    = bits>>20 & 0b111111111111;
+            printf("end\n");
+
             break;
 
         case 0b0100011: // function type S

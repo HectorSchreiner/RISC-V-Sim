@@ -14,10 +14,9 @@ int main(void)
    pc->cnt = 0;
    pc->increment = 4;
 
-   for (int i = 0; i < 10; i++) {
+   for (int i = 0; i < 5; i++) {
       printf("PC: %d\n", pc->cnt);
-      printf("instruction: %d\n", instructions_b[pc->cnt / 4]);
-      ih->decode_instruction(ih, instructions_b[pc->cnt / 4]);
+      ih->decode_instruction(ih, instructions_b[pc->cnt]);
       pc->increment_counter(pc);
    }
 

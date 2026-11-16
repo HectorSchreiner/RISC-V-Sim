@@ -9,6 +9,8 @@ struct InstructionHandler* create_instruction_handler() {
     return ih;
 }
 
+void execute_format_i(struct InstructionHandler* ih);
+void execute_format_r(struct InstructionHandler* ih);
 
 instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
     printf("bits: %d\n", bits);
@@ -23,6 +25,7 @@ instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
             ih->rd     = (bits>>7)  & 0b11111;
             ih->funct3 = (bits>>12) & 0b111;
             ih->funct7 = (bits>>25) & 0b1111111;
+            execute_format_r(ih);
             printf("end\n");
             break;
         
@@ -32,6 +35,7 @@ instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
             ih->rd     = (bits>>7)  & 0b11111;
             ih->funct3 = (bits>>12) & 0b111;
             ih->imm    = (bits>>20) & 0b111111111111;
+            execute_format_i(ih);
             printf("end\n");
 
             break;
@@ -79,6 +83,45 @@ instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
     }
 }
 
+void execute_format_r(struct InstructionHandler* ih) {
+    printf("execute_r");
+    switch (ih->funct3)
+    {
+    case 0:
+        if (ih->funct7 == 0) { // ADD
+            ih->rd = ih->rs1;
+            ih->rd += ih->rs2;
+            printf("ADD rs1(%d) rs2(%d) -> (%d)", ih->rs1, ih->rs2, ih->rd);
+        }
+        if (ih->funct7 == 0x20) { // SUB
+            ih->rd = ih->rs1;
+            ih->rd -= ih->rs2;
+            printf("SUB rs1(%d) rs2(%d) -> (%d)", ih->rs1, ih->rs2, ih->rd);
+        }
+        break;
+    
+    default:
+        break;
+    }
+}
+
+void execute_format_i(struct InstructionHandler* ih) {
+    printf("execute_i");
+    switch (ih->funct3)
+    {
+    case 0:
+        if (ih->funct7 == 0) { // ADDI
+            ih->rd = ih->rs1;
+            ih->rd += ih->imm;
+            printf("ADDI rs1(%d) imm(%d) -> (%d)", ih->rs1, ih->imm, ih->rd);
+        }
+        break;
+    
+    default:
+        break;
+    }
+}
 instruction_err_t execute_instruction(struct InstructionHandler* ih, instruction_t instruction) {
+
     return 0;
 }

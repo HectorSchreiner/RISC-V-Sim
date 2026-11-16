@@ -14,7 +14,10 @@ struct InstructionHandler *create_instruction_handler()
     return ih;
 }
 
-void execute_format_i(struct InstructionHandler *ih);
+void execute_format_i1(struct InstructionHandler *ih);
+void execute_format_i2(struct InstructionHandler *ih);
+void execute_format_i3(struct InstructionHandler *ih);
+void execute_format_i4(struct InstructionHandler *ih);
 void execute_format_r(struct InstructionHandler *ih);
 
 instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
@@ -31,12 +34,36 @@ instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
         execute_format_r(ih);
         break;
 
-    case 0b0010011: // function type I
+    case 0b0010011: // function type I-1 (Immediate Operations)
         ih->rs1 = (bits >> 15) & 0b11111;
         ih->rd = (bits >> 7) & 0b11111;
         ih->funct3 = (bits >> 12) & 0b111;
         ih->imm = (bits >> 20) & 0b111111111111;
-        execute_format_i(ih);
+        execute_format_i1(ih);
+        break;
+
+    case 0b0000011: // function type I-2 (Load Store)
+        ih->rs1 = (bits >> 15) & 0b11111;
+        ih->rd = (bits >> 7) & 0b11111;
+        ih->funct3 = (bits >> 12) & 0b111;
+        ih->imm = (bits >> 20) & 0b111111111111;
+        execute_format_i2(ih);
+        break;
+
+    case 0b1100111: // function type I-3 (Jump and Link reg)
+        ih->rs1 = (bits >> 15) & 0b11111;
+        ih->rd = (bits >> 7) & 0b11111;
+        ih->funct3 = (bits >> 12) & 0b111;
+        ih->imm = (bits >> 20) & 0b111111111111;
+        execute_format_i3(ih);
+        break;
+
+    case 0b1110011: // function type I-4 (Enviroment Calls)
+        ih->rs1 = (bits >> 15) & 0b11111;
+        ih->rd = (bits >> 7) & 0b11111;
+        ih->funct3 = (bits >> 12) & 0b111;
+        ih->imm = (bits >> 20) & 0b111111111111;
+        execute_format_i4(ih);
         break;
 
     case 0b0100011: // function type S
@@ -66,17 +93,19 @@ instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
         printf("function type J\n");
         break;
 
-    case 0b0110111: // function type U
-    case 0b0010111:
-        // ih->rs1    = bits>>15 & 0b11111;
-        // ih->rs2    = bits>>20 & 0b11111;
+    case 0b0110111: // function type U (Load Upper Imm)
         ih->rd = (bits >> 7) & 0b11111;
-        // ih->funct3 = bits>>12 & 0b111;
-        ih->imm = bits & (0b11111111111111111111) << 12;
+        ih->imm = (bits & (0b11111111111111111111)) << 12;
+        printf("function type U1\n");
+        break;
+    case 0b0010111: // function type U (Add Upper Imm To PC)
+        ih->rd = (bits >> 7) & 0b11111;
+        ih->imm = (bits & (0b11111111111111111111)) << 12;
+        printf("function type U2\n");
         break;
 
     default:
-        printf("Function Type Not Existing\n");
+        printf("Function Type Not Existing: %d\n", (bits & 0b1111111));
         return UNKNOWN;
     }
 
@@ -188,11 +217,12 @@ void execute_format_r(struct InstructionHandler *ih)
         printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
     }
     default:
+        printf("UNKOWN FUNC: %d\n", ih->funct3);
         break;
     }
 }
 
-void execute_format_i(struct InstructionHandler *ih)
+void execute_format_i1(struct InstructionHandler *ih)
 {
     switch (ih->funct3)
     {
@@ -278,9 +308,70 @@ void execute_format_i(struct InstructionHandler *ih)
         printf("SLTU x%d(%d), x%d(%d) -> x%d(%d)\n", ih->rs1, src_1, ih->rs2, src_2, ih->rd, ih->registers[ih->rd]);
     }
     default:
+        printf("UNKOWN FUNC: %d\n", ih->funct3);
         break;
     }
 }
+
+void execute_format_i2(struct InstructionHandler *ih)
+{
+    switch (ih->funct3)
+    {
+    case 0:
+    { // LB
+        printf("LB\n");
+        break;
+    }
+
+    case 0x1:
+    {
+        // LH
+        printf("LH\n");
+        break;
+    }
+
+    case 0x2:
+    {
+        // LW
+        printf("LW\n");
+        break;
+    }
+
+    case 0x4:
+    {
+        // LBU
+        printf("LBU\n");
+        break;
+    }
+
+    case 0x5:
+    {
+        // LHU
+        printf("LHU\n");
+        break;
+    }
+
+    default:
+        printf("UNKOWN FUNC: %d\n", ih->funct3);
+        break;
+    }
+}
+
+void execute_format_i3(struct InstructionHandler *ih)
+{
+    printf("JALR\n");
+}
+
+void execute_format_i4(struct InstructionHandler *ih)
+{
+    printf("E");
+    if ((ih->imm & 0b1111) == 0x0) {
+        printf("CALL\n");
+    } else if ((ih->imm & 0b1111) == 0x1) {
+        printf("BREAK\n");
+    }
+}
+
 instruction_err_t execute_instruction(struct InstructionHandler *ih, instruction_t instruction)
 {
 

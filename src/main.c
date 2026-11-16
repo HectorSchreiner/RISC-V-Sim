@@ -14,14 +14,14 @@ int main(void)
    int* instructions_b = fh->read_file(fh, &instruction_cnt);
    
    pc->cnt = 0;
-   pc->increment = 4;
+   pc->increment = 1;
 
    instruction_cnt /= 4;
    printf("the program is %d instructions\n", instruction_cnt);
 
    for (int i = 0; i < instruction_cnt; i++) {
       printf("PC[+%d] - ", pc->cnt);
-      ih->decode_instruction(ih, instructions_b[pc->cnt]);
+      ih->decode_instruction(ih, instructions_b[pc->cnt / 4]);
       pc->increment_counter(pc);
    }
 

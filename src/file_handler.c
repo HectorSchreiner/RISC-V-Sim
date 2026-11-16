@@ -14,12 +14,13 @@ int* read_file(struct FileHandler *fh, int *size)
 {
    char filename[] = "/home/anders/Documents/git-repos/RISC-V-Sim/tests/addlarge.bin";
 
-   FILE *fptr;
-   __uint32_t value;
-   if ((fptr = fopen(filename, "rb")) == NULL) {
+   FILE *fptr = fopen(filename, "rb");
+   if ((fptr ) == NULL) {
       printf("Error! opening file");
+      return NULL;
    }
-
+   
+   __uint32_t value;
    struct stat st;
    stat(filename, &st);
    *size = st.st_size;
@@ -29,8 +30,10 @@ int* read_file(struct FileHandler *fh, int *size)
    
    while (fread(&value, sizeof(value), 1, fptr) == 1) {
       instructions_b[cnt] = value;
-      cnt += 4;
+      cnt++;
    }
+
+   fclose(fptr);
 
    return instructions_b;
 }

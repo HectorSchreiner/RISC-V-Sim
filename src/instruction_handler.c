@@ -1,9 +1,12 @@
 #include "instructions.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct InstructionHandler* create_instruction_handler() {
-    struct InstructionHandler* ih = malloc((sizeof(struct InstructionHandler)));
+    struct InstructionHandler* ih = malloc(sizeof(struct InstructionHandler));
+    if (!ih) return NULL;
+    memset(ih->registers, 0, sizeof ih->registers);
     ih->decode_instruction = decode_instruction;
     ih->execute_instruction = execute_instruction;
     return ih;
@@ -79,8 +82,11 @@ instruction_err_t decode_instruction(struct InstructionHandler* ih, int bits) {
         
         default:
             printf("stupid ass\n");
-            return UNKNOWN;        
+            return UNKNOWN;
     }
+
+    ih->registers[0] = 0; // x0 is hardwired to zero
+    return OK;
 }
 
 void execute_format_r(struct InstructionHandler* ih) {
@@ -91,12 +97,10 @@ void execute_format_r(struct InstructionHandler* ih) {
         if (ih->funct7 == 0) { // ADD
             ih->rd = ih->rs1;
             ih->rd += ih->rs2;
-            printf("ADD rs1(%d) rs2(%d) -> (%d)", ih->rs1, ih->rs2, ih->rd);
         }
         if (ih->funct7 == 0x20) { // SUB
             ih->rd = ih->rs1;
             ih->rd -= ih->rs2;
-            printf("SUB rs1(%d) rs2(%d) -> (%d)", ih->rs1, ih->rs2, ih->rd);
         }
         break;
     
@@ -106,14 +110,14 @@ void execute_format_r(struct InstructionHandler* ih) {
 }
 
 void execute_format_i(struct InstructionHandler* ih) {
-    printf("execute_i");
+    printf("execute_i\n");
     switch (ih->funct3)
     {
     case 0:
         if (ih->funct7 == 0) { // ADDI
-            ih->rd = ih->rs1;
-            ih->rd += ih->imm;
-            printf("ADDI rs1(%d) imm(%d) -> (%d)", ih->rs1, ih->imm, ih->rd);
+            ih->registers[ih->rd] = ih->registers[ih->rs1];
+            ih->registers[ih->rd] += ih->imm;
+            printf("ADDI rs1(%d) imm(%d) -> rd(%d)\n", ih->registers[ih->rs1], ih->imm, ih->registers[ih->rd]);
         }
         break;
     

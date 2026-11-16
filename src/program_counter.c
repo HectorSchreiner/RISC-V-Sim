@@ -10,12 +10,12 @@ struct ProgramCounter* create_counter() {
    return pc;
 }
 
-program_cnt_err_t increment_counter(ProgramCounter* pc) {
+program_cnt_err_t increment_counter(struct ProgramCounter* pc) {
    pc->cnt += pc->increment;
    return 0;
 }
 
-program_cnt_err_t set_counter(ProgramCounter* pc, unsigned value) {
+program_cnt_err_t set_counter(struct ProgramCounter* pc, unsigned value) {
    pc->cnt = value;
    return 0;
 }

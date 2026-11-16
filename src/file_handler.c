@@ -10,7 +10,7 @@ struct FileHandler* create_filehandler() {
    return fh;
 }
 
-int* read_file(file_handler_t *fh)
+int* read_file(struct FileHandler *fh)
 {
    char filename[] = "/home/hector/dtu/cae/RISC-V-Sim/tests/addi.bin";
 

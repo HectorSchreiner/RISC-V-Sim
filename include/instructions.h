@@ -1,3 +1,5 @@
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
 
 typedef enum Instruction {
     add_i,
@@ -50,14 +52,15 @@ typedef enum Register {
     x2,
     x3
     // ...
-} register_t;
+} reg_t;
 
 typedef enum InstructionErr {
     UNKNOWN,
     OK,
 } instruction_err_t;
 
-typedef struct InstructionHandler {
+struct InstructionHandler {
+    int registers[32];
     int rs1;
     int rs2;
     int rd;
@@ -66,7 +69,7 @@ typedef struct InstructionHandler {
     int imm;
     instruction_err_t (*decode_instruction)(struct InstructionHandler *self, int bits); // also something that resembles the instruction in bits
     instruction_err_t (*execute_instruction)(struct InstructionHandler *self, instruction_t instruction);
-} instruction_handler_t;
+};
 
 struct InstructionHandler* create_instruction_handler();
 
@@ -80,3 +83,5 @@ instruction_err_t execute_instruction(struct InstructionHandler *self, instructi
 /// @param self 
 /// @return `instruction_err_t
 instruction_err_t decode_instruction(struct InstructionHandler *self, int bits);
+
+#endif

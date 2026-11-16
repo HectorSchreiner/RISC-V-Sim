@@ -11,13 +11,13 @@ typedef enum FileErr
 /// @brief `FileHandler` is a struct that will do all file operations on the input file/files.
 /// If you want to add an operation to this file, create a function declaration, and add it as a function pointer
 /// this way we can simulate methods.
-typedef struct FileHandler
+struct FileHandler
 {
     int* (*read_file)(struct FileHandler *self);
-} file_handler_t;
+};
 
 struct FileHandler* create_filehandler();
 
-int* read_file(file_handler_t* fh);
+int* read_file(struct FileHandler* fh);
 
 #endif

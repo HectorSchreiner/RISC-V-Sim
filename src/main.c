@@ -21,7 +21,7 @@ int main(void)
 
    for (int i = 0; i < instruction_cnt; i++) {
       printf("PC[+%d] - ", pc->cnt);
-      ih->decode_instruction(ih, instructions_b[pc->cnt / 4]);
+      ih->decode_instruction(ih, instructions_b[pc->cnt], pc);
       pc->increment_counter(pc);
    }
 

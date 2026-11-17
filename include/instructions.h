@@ -1,6 +1,8 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
+#include "program_counter.h"
+
 typedef enum Instruction {
     add_i,
     sub_i,
@@ -61,13 +63,14 @@ typedef enum InstructionErr {
 
 struct InstructionHandler {
     int registers[32];
+    int memory[4096];
     int rs1;
     int rs2;
     int rd;
     int funct7;
     int funct3;
     int imm;
-    instruction_err_t (*decode_instruction)(struct InstructionHandler *self, int bits); // also something that resembles the instruction in bits
+    instruction_err_t (*decode_instruction)(struct InstructionHandler *self, int bits, struct ProgramCounter* pc); // also something that resembles the instruction in bits
     instruction_err_t (*execute_instruction)(struct InstructionHandler *self, instruction_t instruction);
 };
 
@@ -82,6 +85,6 @@ instruction_err_t execute_instruction(struct InstructionHandler *self, instructi
 /// @brief Takes the inputs bits, and converts it into the `Instruction` type.
 /// @param self 
 /// @return `instruction_err_t
-instruction_err_t decode_instruction(struct InstructionHandler *self, int bits);
+instruction_err_t decode_instruction(struct InstructionHandler *self, int bits, struct ProgramCounter* pc);
 
 #endif

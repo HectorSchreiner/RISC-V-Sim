@@ -30,7 +30,7 @@ int* read_file(struct FileHandler *fh, int *size)
    
    while (fread(&value, sizeof(value), 1, fptr) == 1) {
       instructions_b[cnt] = value;
-      cnt++;
+      cnt+=4;
    }
 
    fclose(fptr);

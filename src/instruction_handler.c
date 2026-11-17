@@ -16,6 +16,8 @@ struct InstructionHandler *create_instruction_handler()
 
 void execute_format_i(struct InstructionHandler *ih);
 void execute_format_r(struct InstructionHandler *ih);
+void execute_format_b(struct InstructionHandler *ih);
+
 
 instruction_err_t decode_instruction(struct InstructionHandler *ih, int bits)
 {
@@ -281,6 +283,15 @@ void execute_format_i(struct InstructionHandler *ih)
         break;
     }
 }
+
+void execute_format_b(struct InstructionHandler *ih)
+{
+    switch (ih->funct3)h
+
+}
+
+
+
 instruction_err_t execute_instruction(struct InstructionHandler *ih, instruction_t instruction)
 {
 

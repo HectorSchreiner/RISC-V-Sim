@@ -14,7 +14,7 @@ int main(void)
    int* instructions_b = fh->read_file(fh, &instruction_cnt);
    
    pc->cnt = 0;
-   pc->increment = 1;
+   pc->increment = 4;
 
    instruction_cnt /= 4;
    printf("the program is %d instructions\n", instruction_cnt);

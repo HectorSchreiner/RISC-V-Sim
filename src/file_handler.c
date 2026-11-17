@@ -10,9 +10,11 @@ struct FileHandler* create_filehandler() {
    return fh;
 }
 
-int* read_file(struct FileHandler *fh, int *size)
+uint8_t* read_file(struct FileHandler *fh, char *filename, int *size)
 {
-   char filename[] = "/home/anders/Documents/git-repos/RISC-V-Sim/tests/addlarge.bin";
+   //char filename[] = "/home/anders/Documents/git-repos/RISC-V-Sim/tests/addlarge.bin";
+   (void)fh;
+
 
    FILE *fptr = fopen(filename, "rb");
    if ((fptr ) == NULL) {
@@ -20,20 +22,35 @@ int* read_file(struct FileHandler *fh, int *size)
       return NULL;
    }
    
-   __uint32_t value;
-   struct stat st;
-   stat(filename, &st);
-   *size = st.st_size;
-
-   int *instructions_b = malloc((size_t)*size);
-   int cnt = 0;
-   
-   while (fread(&value, sizeof(value), 1, fptr) == 1) {
-      instructions_b[cnt] = value;
-      cnt+=4;
+   if (fseek(fptr, 0, SEEK_END) != 0) {
+      fclose(fptr);
+      return NULL;
    }
 
+   long len = ftell(fptr);
+   if (len < 0) {
+      fclose(fptr);
+      return NULL;
+   }
+
+   rewind(fptr);
+
+   uint8_t *buf = malloc(len > 0 ? (size_t)len : 1);
+
+   if (!buf) {
+      fclose(fptr);
+      return NULL;
+   }
+
+   size_t n = fread(buf, 1, (size_t)len, fptr);
    fclose(fptr);
 
-   return instructions_b;
+   if (n != (size_t)len) {
+      free(buf);
+      return NULL;
+   }
+
+   *size = n;
+
+   return buf;
 }

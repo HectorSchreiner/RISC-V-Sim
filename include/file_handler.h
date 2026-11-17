@@ -1,6 +1,8 @@
 #ifndef FILE_HANDLER_H
 #define FILE_HANDLER_H
 
+#include <stdint.h>
+
 typedef enum FileErr
 {
     FILENAME_DOESNT_EXIST_ERR,
@@ -13,11 +15,11 @@ typedef enum FileErr
 /// this way we can simulate methods.
 struct FileHandler
 {
-    int* (*read_file)(struct FileHandler *self, int *size);
+    uint8_t* (*read_file)(struct FileHandler *self, char *filename, int *size);
 };
 
 struct FileHandler* create_filehandler();
 
-int* read_file(struct FileHandler* fh, int *size);
+uint8_t* read_file(struct FileHandler* fh, char *filename, int *size);
 
 #endif

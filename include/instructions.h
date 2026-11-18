@@ -70,6 +70,7 @@ struct InstructionHandler {
     int funct7;
     int funct3;
     int imm;
+    int halted;
     instruction_err_t (*decode_instruction)(struct InstructionHandler *self, int bits, struct ProgramCounter* pc); // also something that resembles the instruction in bits
     instruction_err_t (*execute_instruction)(struct InstructionHandler *self, instruction_t instruction);
 };

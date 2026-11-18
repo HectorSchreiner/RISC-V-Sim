@@ -10,6 +10,7 @@ struct InstructionHandler *create_instruction_handler()
     if (!ih)
         return NULL;
     memset(ih->registers, 0, sizeof ih->registers);
+    ih->halted = 0;
     ih->decode_instruction = decode_instruction;
     ih->execute_instruction = execute_instruction;
     return ih;
@@ -412,10 +413,14 @@ void execute_format_i4(struct InstructionHandler *ih)
     printf("E");
     if ((ih->imm & 0b1111) == 0x0) {
         printf("CALL\n");
+        if (ih->registers[17] == 10) {   
+            ih->halted = 1;
+        }
         sleep(0);
     } else if ((ih->imm & 0b1111) == 0x1) {
         printf("BREAK\n");
     }
+
 }
 
 void execute_format_u1(struct InstructionHandler *ih) {

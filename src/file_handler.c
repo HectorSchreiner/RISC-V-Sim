@@ -12,28 +12,29 @@ struct FileHandler* create_filehandler() {
 
 int* read_file(struct FileHandler *fh, int *size)
 {
-   char filename[] = "/home/anders/Documents/git-repos/RISC-V-Sim/tests/addlarge.bin";
+   char filename[] = "tests/addlarge.bin";
 
    FILE *fptr = fopen(filename, "rb");
-   if ((fptr ) == NULL) {
-      printf("Error! opening file");
+   if (fptr == NULL) {
+      printf("Error! opening file\n");
       return NULL;
    }
-   
-   __uint32_t value;
-   struct stat st;
-   stat(filename, &st);
-   *size = st.st_size;
 
-   int *instructions_b = malloc((size_t)*size);
-   int cnt = 0;
-   
-   while (fread(&value, sizeof(value), 1, fptr) == 1) {
-      instructions_b[cnt] = value;
-      cnt+=4;
+   struct stat st;
+   if (stat(filename, &st) != 0) {
+      fclose(fptr);
+      return NULL;
+   }
+   *size = st.st_size;                       // size in BYTES
+
+   int *instructions = malloc(st.st_size);
+   if (!instructions) {
+      fclose(fptr);
+      return NULL;
    }
 
+   fread(instructions, sizeof(int), st.st_size / sizeof(int), fptr);
    fclose(fptr);
 
-   return instructions_b;
+   return instructions;
 }

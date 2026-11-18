@@ -19,9 +19,9 @@ int main(void)
    instruction_cnt /= 4;
    printf("the program is %d instructions\n", instruction_cnt);
 
-   for (int i = 0; i < instruction_cnt; i++) {
+ while (!ih->halted && pc->cnt / 4 < instruction_cnt) {
       printf("PC[+%d] - ", pc->cnt);
-      ih->decode_instruction(ih, instructions_b[pc->cnt], pc);
+      ih->decode_instruction(ih, instructions_b[pc->cnt / 4], pc);
       pc->increment_counter(pc);
    }
 

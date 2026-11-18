@@ -21,6 +21,8 @@ void execute_format_i2(struct InstructionHandler *ih);
 void execute_format_i3(struct InstructionHandler *ih, struct ProgramCounter* pc);
 void execute_format_i4(struct InstructionHandler *ih);
 void execute_format_r(struct InstructionHandler *ih);
+void execute_format_b(struct InstructionHandler *ih);
+
 
 void execute_format_u1(struct InstructionHandler *ih);
 void execute_format_u2(struct InstructionHandler *ih);
@@ -485,7 +487,15 @@ void execute_format_i2(struct InstructionHandler *ih)
     }
 }
 
-void execute_format_i3(struct InstructionHandler *ih, struct ProgramCounter* pc)
+void execute_format_b(struct InstructionHandler *ih)
+{
+    switch (ih->funct3)h
+
+}
+
+
+
+instruction_err_t execute_instruction(struct InstructionHandler *ih, instruction_t instruction)
 {
     int src = pc->cnt;
     int src1 = ih->rs1;

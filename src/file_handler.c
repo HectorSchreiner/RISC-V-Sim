@@ -14,6 +14,7 @@ uint8_t* read_file(struct FileHandler *fh, char *filename, int *size)
 {
    //char filename[] = "/home/anders/Documents/git-repos/RISC-V-Sim/tests/addlarge.bin";
    (void)fh;
+   char filename[] = "tests/addlarge.bin";
 
 
    FILE *fptr = fopen(filename, "rb");
